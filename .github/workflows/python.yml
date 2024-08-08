@@ -28,7 +28,37 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/arm64
+
+      - name: Create build script
+        run: |
+          cat << 'EOF' > cli/build.sh
+          #!/bin/bash
+          
+          # Exit on error and show commands
+          set -ex
+          
+          # Set up Rust
+          curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+          
+          # Add Rust to PATH
+          source $HOME/.cargo/env
+          
+          # Check Rust version
+          rustup -V
+          
+          # Add target
+          # rustup target add $1
+          
+          # Install maturin
+          pip install maturin
+          
+          # Build
+          maturin build --release --target $1 --out dist -vv
+          EOF
+          
+          # Make build script executable
+          chmod +x cli/build.sh
 
       - name: Build in Docker
         run: |
@@ -37,7 +67,4 @@ jobs:
             -v ${{ github.workspace }}:/io \
             -w /io/cli \
             ghcr.io/rust-cross/manylinux_2_28-cross:aarch64 \
-            /bin/bash -c "\
-              curl -sSf https://sh.rustup.rs | sh -s -- -y && \
-              rustup target add ${{ matrix.platform.target }} && \
-              maturin build --release --target ${{ matrix.platform.target }} --out dist"
+            /bin/bash -c "./build.sh ${{ matrix.platform.target }}"
