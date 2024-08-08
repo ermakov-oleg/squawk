@@ -44,9 +44,6 @@ jobs:
           # Add Rust to PATH
           source $HOME/.cargo/env
           
-          # Check Rust version
-          rustup -V
-          
           # Add target
           # rustup target add $1
           
