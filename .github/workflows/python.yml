@@ -38,5 +38,6 @@ jobs:
             -w /io/cli \
             ghcr.io/rust-cross/manylinux_2_28-cross:aarch64 \
             /bin/bash -c "\
+              curl -sSf https://sh.rustup.rs | sh -s -- -y && \
               rustup target add ${{ matrix.platform.target }} && \
               maturin build --release --target ${{ matrix.platform.target }} --out dist"
