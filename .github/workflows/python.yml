@@ -75,6 +75,7 @@ jobs:
             target: aarch64-unknown-linux-gnu
             before-script: |
               find /usr -name libc-header-start.h
+              export BINDGEN_EXTRA_CLANG_ARGS="--sysroot /usr/aarch64-unknown-linux-gnu/aarch64-unknown-linux-gnu/sysroot/usr/include/"
               cargo build -j1 -vvv -p libpg_query-sys
 
           #  docker-options: --platform linux/arm64
