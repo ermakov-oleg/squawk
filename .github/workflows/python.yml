@@ -13,58 +13,58 @@ permissions:
   contents: read
 
 jobs:
-  linux:
-    runs-on: ${{ matrix.platform.runner }}
-    strategy:
-      matrix:
-        platform:
-          - runner: ubuntu-latest
-            target: aarch64-unknown-linux-gnu
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          platforms: linux/arm64
-
-      - name: Create build script
-        run: |
-          cat << 'EOF' > cli/build.sh
-          #!/bin/bash
-          
-          # Exit on error and show commands
-          set -ex
-          
-          # Set up Rust
-          curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
-          
-          # Add Rust to PATH
-          source $HOME/.cargo/env
-          
-          # Add target
-          # rustup target add $1
-          
-          # Install maturin
-          pip install maturin
-          
-          # Build
-          maturin build --release --target $1 --out dist
-          EOF
-          
-          # Make build script executable
-          chmod +x cli/build.sh
-
-      - name: Build in Docker
-        run: |
-          docker run --rm \
-            --platform linux/arm64 \
-            -v ${{ github.workspace }}:/io \
-            -w /io/cli \
-            ghcr.io/rust-cross/manylinux_2_28-cross:aarch64 \
-            /bin/bash -c "./build.sh ${{ matrix.platform.target }}"
+#  linux:
+#    runs-on: ${{ matrix.platform.runner }}
+#    strategy:
+#      matrix:
+#        platform:
+#          - runner: ubuntu-latest
+#            target: aarch64-unknown-linux-gnu
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v3
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#        with:
+#          platforms: linux/arm64
+#
+#      - name: Create build script
+#        run: |
+#          cat << 'EOF' > cli/build.sh
+#          #!/bin/bash
+#
+#          # Exit on error and show commands
+#          set -ex
+#
+#          # Set up Rust
+#          curl -sSf https://sh.rustup.rs | sh -s -- -y --profile minimal
+#
+#          # Add Rust to PATH
+#          source $HOME/.cargo/env
+#
+#          # Add target
+#          # rustup target add $1
+#
+#          # Install maturin
+#          pip install maturin
+#
+#          # Build
+#          maturin build --release --target $1 --out dist
+#          EOF
+#
+#          # Make build script executable
+#          chmod +x cli/build.sh
+#
+#      - name: Build in Docker
+#        run: |
+#          docker run --rm \
+#            --platform linux/arm64 \
+#            -v ${{ github.workspace }}:/io \
+#            -w /io/cli \
+#            ghcr.io/rust-cross/manylinux_2_28-cross:aarch64 \
+#            /bin/bash -c "./build.sh ${{ matrix.platform.target }}"
 
   linux2:
     runs-on: ${{ matrix.platform.runner }}
@@ -74,7 +74,9 @@ jobs:
           - runner: ubuntu-latest
             target: aarch64-unknown-linux-gnu
             before-script: |
+              find /usr -name libc-header-start.h
               cargo build -j1 -vvv -p libpg_query-sys
+
           #  docker-options: --platform linux/arm64
     steps:
       - uses: actions/checkout@v4
