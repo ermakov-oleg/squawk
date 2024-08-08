@@ -73,6 +73,8 @@ jobs:
         platform:
           - runner: ubuntu-latest
             target: aarch64-unknown-linux-gnu
+            before-script: |
+              cargo build -j1 -vvv -p libpg_query-sys
           #  docker-options: --platform linux/arm64
     steps:
       - uses: actions/checkout@v4
@@ -86,4 +88,4 @@ jobs:
           # docker-options: ${{ matrix.platform.docker-options }}
           # https://github.com/PyO3/maturin-action/issues/249
           # sccache: "true"
-          # before-script-linux: ${{ matrix.platform.before-script }}
+          before-script-linux: ${{ matrix.platform.before-script }}
