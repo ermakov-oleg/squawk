@@ -91,6 +91,8 @@ jobs:
           docker-options: ${{ matrix.platform.docker-options }}
           sccache: "true"
           before-script-linux: ${{ matrix.platform.before-script }}
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
