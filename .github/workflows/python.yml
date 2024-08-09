@@ -86,8 +86,13 @@ jobs:
         with:
           target: ${{ matrix.platform.target }}
           working-directory: cli
-          args: --release --out dist
+          args: --release --out dist -v
           manylinux: manylinux_2_28
           docker-options: ${{ matrix.platform.docker-options }}
           sccache: "true"
           before-script-linux: ${{ matrix.platform.before-script }}
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-linux-${{ matrix.platform.target }}
+          path: dist
