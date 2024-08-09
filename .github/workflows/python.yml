@@ -96,3 +96,4 @@ jobs:
         with:
           name: wheels-linux-${{ matrix.platform.target }}
           path: cli/dist
+          if-no-files-found: error
