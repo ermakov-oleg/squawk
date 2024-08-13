@@ -81,7 +81,7 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         env:
-          CFLAGS: '-D_POSIX_C_SOURCE=200809L -DNI_MAXHOST=1025'
+          CFLAGS: '-D HAVE_STRCHRNUL'
         with:
           target: ${{ matrix.platform.target }}
           working-directory: cli
