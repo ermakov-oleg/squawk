@@ -73,18 +73,12 @@ jobs:
         platform:
         - runner: ubuntu-latest
           target: aarch64-unknown-linux-gnu
-          # docker-options: --platform linux/arm64
+          before-script: |
+            python3 -m pip install ziglang==0.11.0
     steps:
       - uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
-      - name: Generate .cargo/config.toml
-        run: |
-            mkdir -p .cargo
-            echo '[build]' > .cargo/config.toml
-            echo '[target."cfg(all())".dependencies.libpg_query-sys]' >> .cargo/config.toml
-            echo 'rustflags = ["-C", "link-arg=-DHAVE_STRCHRNUL"]' >> .cargo/config.toml
-
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
