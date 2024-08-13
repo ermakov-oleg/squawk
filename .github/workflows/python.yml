@@ -78,10 +78,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
+      - name: Generate .cargo/config.toml
+        run: |
+            mkdir -p .cargo
+            echo '[build]' > .cargo/config.toml
+            echo '[target."cfg(all())".dependencies.libpg_query-sys]' >> .cargo/config.toml
+            echo 'rustflags = ["-C", "link-arg=-DHAVE_STRCHRNUL"]' >> .cargo/config.toml
+
       - name: Build wheels
         uses: PyO3/maturin-action@v1
-        env:
-          CFLAGS: '-D HAVE_STRCHRNUL'
         with:
           target: ${{ matrix.platform.target }}
           working-directory: cli
