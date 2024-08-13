@@ -85,8 +85,6 @@ jobs:
           target: ${{ matrix.platform.target }}
           working-directory: cli
           args: --release --out dist -v --zig
-          manylinux: manylinux_2_28
-          docker-options: ${{ matrix.platform.docker-options }}
           sccache: "true"
           before-script-linux: ${{ matrix.platform.before-script }}
       - name: Upload wheels
